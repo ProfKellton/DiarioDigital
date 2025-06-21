@@ -1,26 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Hostinger Style</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
         body {
+            font-family: 'Poppins', sans-serif;
             margin: 0;
-            font-family: sans-serif;
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             min-height: 100vh;
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
             padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden; /* Para a animação de flutuação */
+        }
+
+        /* Animação de flutuação constante */
+        @keyframes float-animation {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Animação de brilho (pulse-glow) */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px rgba(34, 197, 85, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(34, 197, 85, 0.7); }
+            100% { box-shadow: 0 0 15px rgba(34, 197, 85, 0.4); }
         }
 
         .glass-effect {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.05); /* Fundo mais transparente para login */
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 30px;
@@ -28,140 +45,261 @@
             text-align: center;
             width: 100%;
             max-width: 400px;
+            box-sizing: border-box;
+            position: relative;
+            animation: float-animation 3.5s ease-in-out infinite, pulse-glow 2s infinite alternate;
+            transition: all 0.3s ease;
+        }
+        .glass-effect:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            width: 70px; /* Logo um pouco maior */
+            height: 70px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 8px rgba(34, 197, 85, 0.7)); /* Sombra para o logo */
         }
 
         .gradient-text {
-            background: linear-gradient(135deg, #22c55e, #3b82f6, #8b5cf6);
+            background: linear-gradient(135deg, #22c55e, #10b981);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-size: 2rem;
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .subtitle {
-            font-size: 1rem;
-            margin-bottom: 20px;
-            color: #cccccc;
-        }
-
-        .floating-animation {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .pulse-glow {
-            animation: pulse-glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes pulse-glow {
-            from { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
-            to { box-shadow: 0 0 30px rgba(34, 197, 94, 0.6); }
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0 15px 0;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            font-size: 1rem;
+            color: #b0b0b0;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+            line-height: 1.5;
         }
 
         label {
             display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-weight: 600;
+            font-size: 0.95em;
             text-align: left;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 12px 12px 45px; /* Ajuste para o ícone */
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 1em;
+            color: #ffffff;
+            transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+            margin-bottom: 20px; /* Espaço entre inputs */
+        }
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #a0a0a0;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #22c55e;
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(34, 197, 85, 0.3);
+        }
+
+        .input-group {
+            position: relative;
+        }
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0a0a0;
+            font-size: 1.1em;
         }
 
         button {
-            padding: 10px 20px;
-            border: none;
-            background: #22c55e;
+            background: linear-gradient(90deg, #22c55e, #10b981);
             color: white;
-            border-radius: 8px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s;
+            font-size: 1.05em;
+            font-weight: bold;
+            transition: all 0.3s ease;
             width: 100%;
-            font-size: 1rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(34, 197, 85, 0.4);
+            margin-top: 10px;
         }
-
         button:hover {
-            background: #16a34a;
+            background: linear-gradient(90deg, #10b981, #0f9f70);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(34, 197, 85, 0.6);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(34, 197, 85, 0.2);
         }
 
         .link {
-            margin-top: 15px;
-            color: #3b82f6;
-            cursor: pointer;
             display: block;
-            font-size: 0.9rem;
+            margin-top: 25px;
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+            cursor: pointer;
         }
-
         .link:hover {
+            color: #22c55e;
             text-decoration: underline;
         }
 
-        .logo {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 15px;
+        #message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        #message.error {
+            background-color: rgba(255, 99, 71, 0.2);
+            color: #ff6347;
+            border: 1px solid rgba(255, 99, 71, 0.4);
         }
 
         @media (max-width: 500px) {
             .glass-effect {
-                padding: 20px;
+                padding: 25px;
+                border-radius: 12px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                animation: none;
+                transform: translateY(0) !important;
             }
-
+            .glass-effect:hover {
+                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                 transform: translateY(0) !important;
+            }
+            .logo {
+                width: 50px;
+                height: 50px;
+                margin-bottom: 10px;
+            }
             .gradient-text {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
-
+            .subtitle {
+                font-size: 0.85em;
+                margin-bottom: 20px;
+            }
+            label {
+                font-size: 0.9em;
+            }
+            input[type="text"],
+            input[type="password"] {
+                font-size: 0.95em;
+                padding: 10px 10px 10px 40px;
+            }
+            .input-group i {
+                font-size: 1em;
+            }
             button {
-                font-size: 0.9rem;
+                font-size: 1em;
+                padding: 12px 20px;
+            }
+            .link {
+                font-size: 0.85em;
+                margin-top: 20px;
             }
         }
     </style>
 </head>
-
 <body>
     <div class="glass-effect floating-animation pulse-glow">
-        <img src="/vite.svg" alt="Logo" class="logo">
-
-        <div class="gradient-text">Bem-vindo de Volta!</div>
+        <img src="—Pngtree—three-dimensional diary_5410276.png" alt="Logo" class="logo"> <div class="gradient-text">Bem-vindo de Volta!</div>
         <div class="subtitle">Acesse suas anotações diárias.</div>
 
-        <label for="username">Usuário</label>
-        <input type="text" id="username" placeholder="Digite seu usuário">
+        <div class="input-group">
+            <label for="username">Usuário</label>
+            <i class="fas fa-user"></i>
+            <input type="text" id="username" placeholder="Digite seu usuário">
+        </div>
 
-        <label for="password">Senha</label>
-        <input type="password" id="password" placeholder="Digite sua senha">
+        <div class="input-group">
+            <label for="password">Senha</label>
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Digite sua senha">
+        </div>
 
         <button id="loginBtn">Entrar</button>
 
         <span class="link" id="registerLink">Não tem conta? Registre-se</span>
+        <div id="message"></div>
     </div>
 
     <script>
         const loginBtn = document.getElementById('loginBtn');
         const registerLink = document.getElementById('registerLink');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const messageDiv = document.getElementById('message');
 
-        loginBtn.addEventListener('click', () => {
-            alert('Login efetuado!');
+        loginBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            messageDiv.style.display = 'none';
+            messageDiv.className = '';
+
+            if (username === '' || password === '') {
+                messageDiv.textContent = 'Por favor, preencha todos os campos.';
+                messageDiv.className = 'error';
+                messageDiv.style.display = 'block';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            const foundUser = users.find(user => user.username.toLowerCase() === username.toLowerCase() && user.password === password);
+
+            if (foundUser) {
+                // Login bem-sucedido
+                // Armazena o usuário logado em sessionStorage para controle de sessão
+                sessionStorage.setItem('currentUser', JSON.stringify({ username: foundUser.username }));
+                // Armazena o último usuário logado em localStorage (opcional, para conveniência)
+                localStorage.setItem('lastLoggedInUser', foundUser.username);
+
+                // Redireciona para a página principal (index.html)
+                window.location.href = 'index.html';
+            } else {
+                // Credenciais incorretas
+                messageDiv.textContent = 'Usuário ou senha incorretos.';
+                messageDiv.className = 'error';
+                messageDiv.style.display = 'block';
+            }
         });
 
-        registerLink.addEventListener('click', () => {
-            alert('Direcionando para a página de registro.');
+        registerLink.addEventListener('click', function() {
+            window.location.href = 'Registro.html';
         });
+
+        if (foundUser) {
+    // Login bem-sucedido
+    sessionStorage.setItem('currentUser', JSON.stringify({ username: foundUser.username }));
+    localStorage.setItem('lastLoggedInUser', foundUser.username); // Opcional, para pré-preencher o login
+    window.location.href = 'index.html'; // CORREÇÃO/VERIFICAÇÃO: Garanta que seja 'Principal.html'
+}
     </script>
 </body>
-
 </html>

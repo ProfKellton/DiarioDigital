@@ -14,6 +14,10 @@
             /* Control pointer events for main content */
             --main-content-user-select: auto;
             /* Control user select for main content */
+            --note-indicator-color: #6dff6d;
+            /* Default green for note indicator */
+            --filtered-day-border: 2px solid #ffeb3b;
+            /* Border for filtered days */
         }
 
         body {
@@ -62,12 +66,25 @@
         .header-left {
             display: flex;
             align-items: center;
+            flex-direction: column;
+            /* Changed to column to stack title and username */
+            align-items: flex-start;
+            /* Align text to the left */
         }
 
         .header-left img {
             width: 50px;
             height: 50px;
             margin-right: 10px;
+            align-self: flex-start;
+            /* Ensure logo stays at the start */
+        }
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            /* Take full width for alignment */
         }
 
         .gradient-text {
@@ -78,6 +95,17 @@
             color: transparent;
             font-size: 2em;
             font-weight: bold;
+            margin: 0;
+            /* Remove default margin */
+        }
+
+        #usernameDisplay {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            /* Space between title and username */
+            margin-left: 60px;
+            /* Align with the start of the title, considering logo width */
         }
 
         /* Menu button styles */
@@ -121,7 +149,7 @@
 
         #sidebar.open {
             width: 280px;
-            /* Width when open */
+            /* Default width when open for desktop */
             padding-left: 20px;
             padding-right: 20px;
         }
@@ -136,75 +164,154 @@
             text-decoration: none;
         }
 
-        #sidebar h2,
-        #sidebar h3 {
-            margin-bottom: 15px;
+        #sidebar h2 {
+            margin-bottom: 25px;
             color: #f472b6;
-            /* Match gradient text color */
+            font-size: 1.8em;
         }
 
-        #colorOptions,
-        #autoDeleteOptions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px; /* Reduced gap for more space */
+        /* Acordeão para opções da sidebar */
+        .sidebar-section {
             width: 100%;
-            margin-bottom: 20px; /* Reduced margin-bottom */
+            margin-bottom: 15px;
+            /* Space between sections */
         }
 
-        #colorOptions button {
-            background: var(--button-gradient, linear-gradient(135deg, #f472b6, #a78bfa));
+        .sidebar-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: border-bottom 0.3s ease;
+            margin-bottom: 0;
+            /* Reset margin */
+        }
+
+        .sidebar-section-header:hover {
+            border-bottom-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .sidebar-section-header h3 {
+            margin: 0;
+            color: #a78bfa;
+            /* Lighter purple for section titles */
+            font-size: 1.1em;
+            /* Slightly smaller font */
+        }
+
+        .sidebar-section-header .arrow-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-section-header.active .arrow-icon {
+            transform: rotate(90deg);
+        }
+
+        .sidebar-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+            /* Start hidden with opacity */
+            padding-top: 0;
+            /* No padding when collapsed */
+        }
+
+        .sidebar-section-content.active {
+            max-height: 300px;
+            /* Adjust as needed for content height */
+            /* Use a value large enough to cover content */
+            opacity: 1;
+            padding-top: 15px;
+            /* Add padding when open */
+        }
+
+
+        .sidebar-section-content button,
+        .sidebar-section-content select {
+            background: linear-gradient(135deg, #f472b6, #a78bfa);
+            /* Default gradient for buttons */
             border: none;
             color: white;
-            padding: 12px 15px; /* Reduced padding */
+            padding: 12px 15px;
             text-align: left;
-            font-size: 1em; /* Reduced font size */
+            font-size: 1em;
             border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
+            width: 100%;
+            /* Make buttons full width */
+            margin-bottom: 10px;
+            /* Space between buttons in the same section */
         }
 
-        #colorOptions button:hover {
+        /* NEW: Styles for selected print button */
+        .sidebar-section-content button.selected-print-option {
+            border: 2px solid #ffeb3b;
+            box-shadow: 0 0 15px rgba(255, 235, 59, 0.7);
+        }
+
+
+        .sidebar-section-content button:last-child {
+            margin-bottom: 0;
+            /* No margin for the last button */
+        }
+
+        .sidebar-section-content button:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
         }
 
-        #colorOptions button::before {
+        /* Styles for the color theme buttons' ::before (the little circle) */
+        #colorOptionsContent button::before {
             content: '';
             display: inline-block;
-            width: 20px; /* Reduced size */
-            height: 20px; /* Reduced size */
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            margin-right: 10px; /* Reduced margin */
+            margin-right: 10px;
             border: 2px solid rgba(255, 255, 255, 0.5);
             box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+            /* Prevent shrinking */
         }
 
-        #colorOptions button[data-color*="ff00ff"]::before {
+        /* Specific styles for color options inside content - the actual color of the circle */
+        #colorOptionsContent button[data-color*="ff00ff"]::before {
             background: linear-gradient(135deg, #ff00ff, #8000ff);
         }
 
-        #colorOptions button[data-color*="00c6ff"]::before {
+        #colorOptionsContent button[data-color*="00c6ff"]::before {
             background: linear-gradient(135deg, #00c6ff, #0072ff);
         }
 
-        #colorOptions button[data-color*="00ff00"]::before {
+        #colorOptionsContent button[data-color*="00ff00"]::before {
             background: linear-gradient(135deg, #00ff00, #008000);
         }
 
-        #colorOptions button[data-color*="ffcc00"]::before {
+        #colorOptionsContent button[data-color*="ffcc00"]::before {
             background: linear-gradient(135deg, #ffcc00, #ff6600);
         }
 
-        #colorOptions button[data-color*="A020F0"]::before {
+        #colorOptionsContent button[data-color*="A020F0"]::before {
             background: linear-gradient(135deg, #A020F0, #5C2B6A);
         }
 
-        #colorOptions button[data-color*="000000"]::before {
+        #colorOptionsContent button[data-color*="000000"]::before {
             background: linear-gradient(135deg, #000000, #333333);
+        }
+
+        /* NEW: Bolinha para a cor do tema selecionado */
+        #colorOptionsContent button.selected-theme::before {
+            border: 3px solid #ffeb3b;
+            /* Yellow border to highlight */
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.7);
         }
 
 
@@ -296,28 +403,27 @@
             position: relative;
         }
 
+        /* Marcador de anotação (bolinha) */
         .day.has-notes::after {
             content: '';
             display: block;
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #6dff6d;
-            /* Default green for note indicator */
+            background-color: var(--note-indicator-color);
+            /* Utiliza a variável CSS */
             position: absolute;
             top: 5px;
             right: 5px;
             border: 1px solid rgba(0, 0, 0, 0.2);
-            box-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+            box-shadow: 0 0 5px var(--note-indicator-color);
         }
 
-        /* Conditional styling for the note indicator if theme is green */
-        body[data-theme*="00ff00"] .day.has-notes::after {
-            background-color: #ffeb3b;
-            /* Yellow for better contrast on green theme */
-            box-shadow: 0 0 5px rgba(255, 235, 59, 0.7);
+        /* Borda de filtro */
+        .day.filtered-day {
+            outline: var(--filtered-day-border);
+            outline-offset: 2px;
         }
-
 
         .day.current-day {
             outline: 3px solid #ffeb3b;
@@ -388,6 +494,16 @@
             z-index: 10;
         }
 
+        /* NEW: Labels in main content area */
+        .add-note-section label {
+            color: rgba(255, 255, 255, 0.9);
+            /* White/light gray for contrast on dark background */
+            font-weight: bold;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+            display: block;
+        }
+
         .add-note-section input[type="text"],
         .add-note-section textarea {
             width: 100%;
@@ -437,7 +553,8 @@
             font-size: 0.85em;
             color: rgba(255, 255, 255, 0.7);
             text-align: right;
-            margin-top: -10px; /* Pull it closer to textarea */
+            margin-top: -10px;
+            /* Pull it closer to textarea */
         }
 
         .add-note-section button#addNoteBtn {
@@ -486,6 +603,30 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
+        /* Simplified add note button */
+        .notes-container .simplified-add-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #28a745, #218838);
+            /* Green gradient */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+            text-align: center;
+            /* Ensure text is centered */
+        }
+
+        .notes-container .simplified-add-button:hover {
+            background: linear-gradient(135deg, #218838, #1a6f2c);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
         /* --- END: New/Modified styles for add-note-section --- */
 
 
@@ -521,6 +662,16 @@
         .note-card h3 {
             margin: 0;
             color: #f472b6;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .note-card .reminder-bell {
+            font-size: 1em;
+            color: #FFC300;
+            /* Yellow bell */
+            margin-right: 5px;
         }
 
         .note-card p {
@@ -558,6 +709,16 @@
             font-size: 0.75em;
             text-transform: capitalize;
         }
+
+        /* Etiqueta filtrada */
+        .note-label.filtered {
+            background-color: #ffeb3b;
+            /* Yellow for emphasis */
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 0 5px rgba(255, 235, 59, 0.7);
+        }
+
 
         .note-actions {
             position: absolute;
@@ -601,10 +762,12 @@
             background-color: #1DA851;
         }
 
-        /* Modals (Edit, Confirm Delete, Share) */
+        /* Modals (Edit, Confirm Delete, Share, Create Note, Reminder) */
         #editModalOverlay,
         #confirmModalOverlay,
-        #shareModalOverlay {
+        #shareModalOverlay,
+        #createNoteModalOverlay,
+        #reminderNotificationOverlay {
             display: none;
             /* Hidden by default */
             position: fixed;
@@ -624,13 +787,17 @@
 
         #editModalOverlay.active,
         #confirmModalOverlay.active,
-        #shareModalOverlay.active {
+        #shareModalOverlay.active,
+        #createNoteModalOverlay.active,
+        #reminderNotificationOverlay.active {
             display: flex;
         }
 
         .edit-modal-content,
         .confirm-modal-content,
-        .share-modal-content {
+        .share-modal-content,
+        .create-note-modal-content,
+        .reminder-notification-content {
             background-color: rgba(255, 255, 255, 0.95);
             /* Lighter modal background */
             padding: 30px;
@@ -643,19 +810,66 @@
             gap: 20px;
             color: #333;
             /* Dark text for modal content */
+            position: relative;
+            /* For close button */
+        }
+
+        /* Close button for modals */
+        .modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2em;
+            color: #666;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            color: #333;
         }
 
         .edit-modal-content h3,
         .confirm-modal-content h3,
-        .share-modal-content h3 {
+        .share-modal-content h3,
+        .create-note-modal-content h3,
+        .reminder-notification-content h3 {
             margin-top: 0;
             color: #a78bfa;
             font-size: 1.8em;
         }
 
+        .modal-input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
+            /* Default text color for labels in modals */
+            font-size: 0.9em;
+        }
+
+        /* Improvement for visibility for 'Cor do Marcador' */
+        .modal-input-group label[for="markerColorLabel"],
+        .modal-input-group label#markerColorLabelEdit {
+            color: #333;
+            /* Stronger color for contrast on modal background */
+            font-weight: bold;
+            font-size: 1em;
+            /* Slightly larger */
+        }
+
+        .modal-input-group {
+            margin-bottom: 10px;
+            /* Spacing between labeled inputs */
+        }
+
         .edit-modal-content input[type="text"],
         .edit-modal-content textarea,
-        .share-modal-content input[type="tel"] {
+        .share-modal-content input[type="tel"],
+        .create-note-modal-content input[type="text"],
+        .create-note-modal-content textarea {
             /* Style for phone number input */
             width: calc(100% - 20px);
             padding: 12px;
@@ -667,14 +881,25 @@
             box-sizing: border-box;
         }
 
-        .edit-modal-content textarea {
+        .edit-modal-content textarea,
+        .create-note-modal-content textarea {
             height: 150px;
             resize: vertical;
         }
 
+        /* Character count in modals */
+        .modal-char-count {
+            font-size: 0.85em;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+
         .edit-modal-buttons,
         .confirm-modal-buttons,
-        .share-modal-buttons {
+        .share-modal-buttons,
+        .create-note-modal-buttons,
+        .reminder-notification-content .notification-actions {
             display: flex;
             justify-content: flex-end;
             gap: 15px;
@@ -682,7 +907,9 @@
 
         .edit-modal-buttons button,
         .confirm-modal-buttons button,
-        .share-modal-buttons button {
+        .share-modal-buttons button,
+        .create-note-modal-buttons button,
+        .reminder-notification-content .notification-actions button {
             padding: 12px 25px;
             border: none;
             border-radius: 8px;
@@ -694,36 +921,212 @@
 
         .edit-modal-buttons button:hover,
         .confirm-modal-buttons button:hover,
-        .share-modal-buttons button:hover {
+        .share-modal-buttons button:hover,
+        .create-note-modal-buttons button:hover,
+        .reminder-notification-content .notification-actions button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         #saveEditedNote,
         #confirmDeleteBtn,
-        #confirmShareBtn {
+        #confirmShareBtn,
+        #saveNewNoteBtn {
             background-color: #28a745;
             color: white;
         }
 
         #saveEditedNote:hover,
         #confirmDeleteBtn:hover,
-        #confirmShareBtn:hover {
+        #confirmShareBtn:hover,
+        #saveNewNoteBtn:hover {
             background-color: #218838;
         }
 
         #cancelEdit,
         #cancelDeleteBtn,
-        #cancelShareBtn {
+        #cancelShareBtn,
+        #cancelNewNoteBtn {
             background-color: #dc3545;
             color: white;
         }
 
         #cancelEdit:hover,
         #cancelDeleteBtn:hover,
-        #cancelShareBtn:hover {
+        #cancelShareBtn:hover,
+        #cancelNewNoteBtn:hover {
             background-color: #c82333;
         }
+
+        /* Marker Color Palette */
+        .marker-color-palette {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .marker-color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #ccc;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .marker-color-option:hover {
+            transform: scale(1.1);
+            border-color: #a78bfa;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .marker-color-option.selected {
+            border: 3px solid #a78bfa;
+            transform: scale(1.15);
+            box-shadow: 0 0 10px rgba(167, 139, 250, 0.7);
+        }
+
+        /* NEW: Disabled marker color option */
+        .marker-color-palette.disabled .marker-color-option {
+            cursor: not-allowed;
+            opacity: 0.5;
+            pointer-events: none;
+            /* Disable clicks */
+            border-color: #eee;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .marker-color-palette.disabled .marker-color-option.selected {
+            border: 3px solid #ccc;
+            /* Keep border but less prominent */
+            box-shadow: none;
+        }
+
+
+        /* Reminder toggle */
+        .reminder-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #333;
+            /* Default for modals, adjusted for main area below */
+        }
+
+        /* NEW: Reminder toggle in main content area */
+        .add-note-section .reminder-toggle label {
+            color: rgba(255, 255, 255, 0.9);
+            /* White/light gray for contrast on dark background */
+            font-weight: normal;
+        }
+
+
+        .reminder-toggle input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* Basic styling for print output */
+        @media print {
+            body *:not(#printableContent):not(#printableContent *) {
+                display: none !important;
+                /* Hide all elements not part of printableContent */
+                visibility: hidden !important;
+            }
+
+            html,
+            body {
+                height: auto !important;
+                overflow: visible !important;
+                background: none !important;
+                /* No background on print */
+            }
+
+            #printableContent {
+                display: block !important;
+                visibility: visible !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-sizing: border-box;
+                color: #000;
+                /* Black text for print */
+                font-family: sans-serif;
+                padding: 20px;
+                /* Add padding to the print area */
+                page-break-before: auto;
+                /* Allow page breaks before this element if necessary */
+                page-break-after: auto;
+                /* Allow page breaks after this element if necessary */
+            }
+
+            #printableContent h2 {
+                text-align: center;
+                margin-bottom: 25px;
+                /* More space for title */
+                color: #000;
+                font-size: 1.8em;
+                page-break-after: avoid;
+                /* Keep title with first note if possible */
+            }
+
+            #printableContent .note-card {
+                border: 1px solid #ccc;
+                background-color: #fcfcfc;
+                margin-bottom: 25px;
+                /* Spacing between notes */
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: none;
+                /* No shadows on print */
+                page-break-inside: avoid;
+                /* Keep note on one page if possible */
+            }
+
+            #printableContent .note-card h3 {
+                color: #333;
+                font-size: 1.3em;
+                margin-bottom: 8px;
+                display: block;
+                /* Ensure it takes full width */
+                page-break-after: avoid;
+            }
+
+            #printableContent .note-card p {
+                color: #555;
+                font-size: 1em;
+                line-height: 1.5;
+                margin-bottom: 12px;
+                page-break-before: avoid;
+            }
+
+            #printableContent .note-date-print {
+                font-size: 0.8em;
+                color: #777;
+                text-align: right;
+                border-top: 1px dashed #ddd;
+                padding-top: 10px;
+            }
+
+            /* Hide elements not needed in print */
+            .note-labels,
+            .note-actions,
+            .reminder-bell {
+                display: none !important;
+            }
+
+            /* For multiple pages */
+            @page {
+                margin: 2cm;
+                /* Standard print margins */
+            }
+        }
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -736,6 +1139,16 @@
                 width: 100%;
                 justify-content: space-between;
                 /* Spread filter and menu button */
+                flex-wrap: wrap;
+                /* Allow search and filter to wrap */
+                gap: 10px;
+                /* Adjust gap for smaller screens */
+            }
+
+            .search-container,
+            .filter-container {
+                width: 100%;
+                /* Make them full width */
             }
 
             main {
@@ -753,9 +1166,33 @@
             }
 
             #sidebar.open {
-                width: 100%;
-                /* Full width on small screens */
+                width: 75%;
+                /* Adjusted width for better fit on small screens */
+                padding-left: 15px;
+                padding-right: 15px;
             }
+
+            #sidebar h2 {
+                margin-bottom: 20px;
+                font-size: 1.5em;
+            }
+
+            .sidebar-section-header h3 {
+                font-size: 1em;
+            }
+
+            .sidebar-section-content button,
+            .sidebar-section-content select {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+
+            .sidebar-section-content button::before {
+                width: 16px;
+                height: 16px;
+                margin-right: 8px;
+            }
+
 
             .gradient-text {
                 font-size: 1.5em;
@@ -767,7 +1204,9 @@
 
             .edit-modal-content,
             .confirm-modal-content,
-            .share-modal-content {
+            .share-modal-content,
+            .create-note-modal-content,
+            .reminder-notification-content {
                 width: 95%;
                 padding: 20px;
             }
@@ -789,7 +1228,57 @@
                 padding-left: 10px;
                 /* No icon for textarea usually, adjust if needed */
             }
+
+            .header-left {
+                flex-direction: row;
+                /* Keep row for small screens to prevent logo stack */
+                align-items: center;
+            }
+
+            .header-title-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            #usernameDisplay {
+                margin-left: 0;
+                /* Remove left margin for better alignment on small screens */
+            }
         }
+
+        /* --- DESKTOP SPECIFIC ADJUSTMENTS FOR SIDEBAR --- */
+        @media (min-width: 769px) {
+            #sidebar.open {
+                width: 250px;
+                /* A slightly narrower width for desktop */
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            #sidebar h2 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            .sidebar-section-header h3 {
+                font-size: 1.1em;
+            }
+
+            .sidebar-section-content button,
+            .sidebar-section-content select {
+                padding: 10px 12px;
+                /* Make buttons and selects slightly smaller */
+                font-size: 0.95em;
+                /* Smaller font size */
+            }
+
+            .sidebar-section-content button::before {
+                width: 18px;
+                height: 18px;
+                margin-right: 8px;
+            }
+        }
+
 
         /* Styles for label filter in header */
         .filter-container {
@@ -834,12 +1323,15 @@
         }
 
         /* Auto Delete Options styles */
-        #autoDeleteOptions select {
+        #autoDeleteOptionsContent select {
             padding: 8px 12px;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.3);
+            /* Lighter border for contrast */
             background-color: rgba(255, 255, 255, 0.15);
+            /* Slightly transparent white for background */
             color: white;
+            /* Ensure text is white */
             font-size: 1em;
             outline: none;
             width: 100%;
@@ -852,9 +1344,12 @@
             background-size: 12px auto;
         }
 
-        #autoDeleteOptions select option {
+        /* Ensure options in select are readable */
+        #autoDeleteOptionsContent select option {
             background-color: #1a1a1a;
+            /* Dark background for options */
             color: white;
+            /* White text for options */
             padding: 5px;
         }
 
@@ -902,15 +1397,48 @@
             font-size: 1.1em;
             pointer-events: none;
         }
+
+        /* Reminder Notification styles */
+        #reminderNotificationOverlay {
+            z-index: 1060;
+            /* Above other modals */
+        }
+
+        .reminder-notification-content {
+            background-color: rgba(255, 255, 255, 0.98);
+            border: 2px solid #a78bfa;
+            color: #333;
+        }
+
+        .reminder-note-item {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #a78bfa;
+        }
+
+        .reminder-note-item h4 {
+            margin: 0 0 5px 0;
+            color: #a78bfa;
+        }
+
+        .reminder-note-item p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #555;
+        }
     </style>
 </head>
 
 <body data-theme="default">
     <header>
         <div class="header-left">
-            <img src="Gemini_Generated_Image_w46nf2w46nf2w46n.png" alt="Diário Logo">
-            <h1 class="gradient-text">Diário Digital</h1>
-        </div>
+            <div class="header-title-container">
+                <img src="—Pngtree—three-dimensional diary_5410276.png" alt="Diário Logo">
+                <h1 class="gradient-text">Diário Digital</h1>
+            </div>
+            <p id="usernameDisplay"></p> </div>
         <div class="header-right" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
             <div class="search-container">
                 <input type="text" id="noteSearch" placeholder="Pesquisar anotações...">
@@ -927,24 +1455,59 @@
     <aside id="sidebar">
         <a href="javascript:void(0)" id="closeSidebar">&times;</a>
         <h2>Configurações</h2>
-        <div id="colorOptions">
-            <h3>Cor de Fundo</h3>
-            <button data-color="linear-gradient(135deg, #ff00ff 0%, #8000ff 100%)">Roxo Mágico</button>
-            <button data-color="linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)">Céu Azul</button>
-            <button data-color="linear-gradient(135deg, #00ff00 0%, #008000 100%)">Verde Floresta</button>
-            <button data-color="linear-gradient(135deg, #ffcc00 0%, #ff6600 100%)">Pôr do Sol</button>
-            <button data-color="linear-gradient(135deg, #000000 0%, #333333 100%)">Noite Escura</button>
-            <button data-color="linear-gradient(135deg, #A020F0 0%, #5C2B6A 100%)">Padrão</button>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-header" data-target="colorOptionsContent">
+                <h3>Cor de Fundo</h3>
+                <span class="arrow-icon">&gt;</span>
+            </div>
+            <div class="sidebar-section-content" id="colorOptionsContent">
+                <button data-color="linear-gradient(135deg, #ff00ff 0%, #8000ff 100%)">Roxo Mágico</button>
+                <button data-color="linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)">Céu Azul</button>
+                <button data-color="linear-gradient(135deg, #00ff00 0%, #008000 100%)">Verde Floresta</button>
+                <button data-color="linear-gradient(135deg, #ffcc00 0%, #ff6600 100%)">Pôr do Sol</button>
+                <button data-color="linear-gradient(135deg, #000000 0%, #333333 100%)">Noite Escura</button>
+                <button data-color="linear-gradient(135deg, #A020F0 0%, #5C2B6A 100%)">Padrão</button>
+            </div>
         </div>
 
-        <div id="autoDeleteOptions">
-            <h3>Excluir Anotações Antigas</h3>
-            <select id="autoDeleteInterval">
-                <option value="never">Nunca</option>
-                <option value="1_day">Após 1 dia</option>
-                <option value="1_week">Após 1 semana</option>
-                <option value="1_month">Após 1 mês</option>
-            </select>
+        <div class="sidebar-section">
+            <div class="sidebar-section-header" data-target="printOptionsContent">
+                <h3>Imprimir Anotações</h3>
+                <span class="arrow-icon">&gt;</span>
+            </div>
+            <div class="sidebar-section-content" id="printOptionsContent">
+                <button id="printDayNotesBtn">Dia Selecionado</button>
+                <button id="printWeekNotesBtn">Semana Atual</button>
+                <button id="printMonthNotesBtn">Mês Atual</button>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-header" data-target="autoDeleteOptionsContent">
+                <h3>Excluir Anotações Antigas</h3>
+                <span class="arrow-icon">&gt;</span>
+            </div>
+            <div class="sidebar-section-content" id="autoDeleteOptionsContent">
+                <select id="autoDeleteInterval">
+                    <option value="never">Nunca</option>
+                    <option value="1_day">Após 1 dia</option>
+                    <option value="1_week">Após 1 semana</option>
+                    <option value="1_month">Após 1 mês</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-header">
+                <h3>Sessão</h3>
+                <span class="arrow-icon">&gt;</span>
+            </div>
+            <div class="sidebar-section-content"
+                style="max-height: 100px; opacity: 1; padding-top: 15px;">
+                <button id="logoutButton"
+                    style="background-color: #dc3545; color: white; text-align: center;">Sair / Deslogar</button>
+            </div>
         </div>
     </aside>
 
@@ -972,30 +1535,89 @@
             <h2 class="gradient-text">Anotações do Dia</h2>
             <p id="fullSelectedDateDisplay"></p>
 
-            <div class="add-note-section">
-                <div class="input-group">
-                    <span class="icon">&#9999;</span> <input type="text" id="noteTitle" placeholder="Título da Anotação">
+            <div id="addNoteAreaWrapper">
                 </div>
-                <div class="input-group">
-                    <span class="icon">&#127997;</span> <input type="text" id="noteLabels" placeholder="Etiquetas (separadas por vírgula)">
-                </div>
-                <textarea id="noteContent" placeholder="Escreva sua anotação aqui..." maxlength="200"
-                    onkeyup="updateCharCount()" onpaste="updateCharCount()"></textarea>
-                <div class="char-count-wrapper">
-                    <span id="charCount">200 caracteres restantes</span>
-                    <button id="addNoteBtn"></button> </div>
-            </div>
+
             <div class="notes-list" id="notesList">
                 </div>
         </div>
     </main>
 
+    <div id="createNoteModalOverlay">
+        <div class="create-note-modal-content">
+            <button class="modal-close-btn" onclick="closeCreateNoteModal()">&times;</button>
+            <h3>Criar Anotação</h3>
+            <div class="modal-input-group">
+                <label for="newNoteTitle">Título:</label>
+                <input type="text" id="newNoteTitle" placeholder="Título da Anotação">
+            </div>
+            <div class="modal-input-group">
+                <label for="newNoteLabels">Etiquetas (separadas por vírgula):</label>
+                <input type="text" id="newNoteLabels" placeholder="Etiquetas (ex: trabalho, pessoal)">
+            </div>
+            <div class="modal-input-group">
+                <label id="markerColorLabel">Cor do Marcador:</label>
+                <div class="marker-color-palette" id="newNoteMarkerColorPalette">
+                    <div class="marker-color-option selected" data-color="#6dff6d" style="background-color: #6dff6d;">
+                    </div>
+                    <div class="marker-color-option" data-color="#FF5733" style="background-color: #FF5733;"></div>
+                    <div class="marker-color-option" data-color="#337AFF" style="background-color: #337AFF;"></div>
+                    <div class="marker-color-option" data-color="#FFC300" style="background-color: #FFC300;"></div>
+                    <div class="marker-color-option" data-color="#900C3F" style="background-color: #900C3F;"></div>
+                </div>
+            </div>
+            <div class="modal-input-group">
+                <label for="newNoteContent">Texto:</label>
+                <textarea id="newNoteContent" placeholder="Escreva sua anotação aqui..." maxlength="200"
+                    onkeyup="updateModalCharCount('newNoteContent', 'newNoteCharCount')"
+                    onpaste="updateModalCharCount('newNoteContent', 'newNoteCharCount')"></textarea>
+                <span class="modal-char-count" id="newNoteCharCount">200 caracteres restantes</span>
+            </div>
+            <div class="reminder-toggle">
+                <input type="checkbox" id="newNoteReminderToggle">
+                <label for="newNoteReminderToggle">Ativar Lembrete</label>
+            </div>
+            <div class="create-note-modal-buttons">
+                <button id="saveNewNoteBtn">Salvar</button>
+                <button id="cancelNewNoteBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
     <div id="editModalOverlay">
         <div class="edit-modal-content">
+            <button class="modal-close-btn" onclick="closeEditModal()">&times;</button>
             <h3>Editar Anotação</h3>
-            <input type="text" id="editNoteTitle" placeholder="Novo Título">
-            <input type="text" id="editNoteLabels" placeholder="Etiquetas (separadas por vírgula)">
-            <textarea id="editNoteContent" placeholder="Novo Conteúdo"></textarea>
+            <div class="modal-input-group">
+                <label for="editNoteTitle">Título:</label>
+                <input type="text" id="editNoteTitle" placeholder="Novo Título">
+            </div>
+            <div class="modal-input-group">
+                <label for="editNoteLabels">Etiquetas (separadas por vírgula):</label>
+                <input type="text" id="editNoteLabels" placeholder="Etiquetas (ex: trabalho, pessoal)">
+            </div>
+            <div class="modal-input-group">
+                <label id="markerColorLabelEdit">Cor do Marcador:</label>
+                <div class="marker-color-palette" id="editNoteMarkerColorPalette">
+                    <div class="marker-color-option" data-color="#6dff6d" style="background-color: #6dff6d;"></div>
+                    <div class="marker-color-option" data-color="#FF5733" style="background-color: #FF5733;"></div>
+                    <div class="marker-color-option" data-color="#337AFF" style="background-color: #337AFF;"></div>
+                    <div class="marker-color-option" data-color="#FFC300" style="background-color: #FFC300;"></div>
+                    <div class="marker-color-option" data-color="#900C3F" style="background-color: #900C3F;"></div>
+                </div>
+            </div>
+            <div class="modal-input-group">
+                <label for="editNoteContent">Texto:</label>
+                <textarea id="editNoteContent" placeholder="Novo Conteúdo" maxlength="200"
+                    onkeyup="updateModalCharCount('editNoteContent', 'editNoteCharCount')"
+                    onpaste="updateModalCharCount('editNoteContent', 'editNoteCharCount')"></textarea>
+                <span class="modal-char-count" id="editNoteCharCount">200 caracteres restantes</span>
+            </div>
+            <div class="reminder-toggle">
+                <input type="checkbox" id="editNoteReminderToggle">
+                <label for="editNoteReminderToggle">Ativar Lembrete</label>
+            </div>
             <div class="edit-modal-buttons">
                 <button id="saveEditedNote">Salvar</button>
                 <button id="cancelEdit">Cancelar</button>
@@ -1005,6 +1627,7 @@
 
     <div id="confirmModalOverlay">
         <div class="confirm-modal-content">
+            <button class="modal-close-btn" onclick="closeConfirmDeleteModal()">&times;</button>
             <h3>Confirmar Exclusão</h3>
             <p>Tem certeza que deseja apagar esta anotação?</p>
             <div class="confirm-modal-buttons">
@@ -1016,6 +1639,7 @@
 
     <div id="shareModalOverlay">
         <div class="share-modal-content">
+            <button class="modal-close-btn" onclick="closeShareModal()">&times;</button>
             <h3>Compartilhar Anotação via WhatsApp</h3>
             <p>A anotação será compartilhada com o título e conteúdo.</p>
             <input type="tel" id="whatsappNumber" placeholder="Número do WhatsApp (ex: 55 DDD XXXXXXXXX)"
@@ -1027,26 +1651,40 @@
         </div>
     </div>
 
+    <div id="reminderNotificationOverlay">
+        <div class="reminder-notification-content">
+            <button class="modal-close-btn" onclick="closeReminderNotification()">&times;</button>
+            <h3>Lembretes para Hoje</h3>
+            <div id="reminderNotesList">
+                </div>
+            <div class="notification-actions">
+                <button onclick="closeReminderNotification()">Entendi</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="printableContent" style="display: none;"></div>
+
+
     <script>
         const monthYearEl = document.getElementById('monthYear');
         const calendarDaysEl = document.getElementById('calendarDays');
         const prevMonthBtn = document.getElementById('prevMonthBtn');
         const nextMonthBtn = document.getElementById('nextMonthBtn');
         const fullSelectedDateDisplay = document.getElementById('fullSelectedDateDisplay'); // New element for full date
-        const addNoteBtn = document.getElementById('addNoteBtn');
-        const noteTitleInput = document.getElementById('noteTitle');
-        const noteContentInput = document.getElementById('noteContent');
-        const noteLabelsInput = document.getElementById('noteLabels');
+        const usernameDisplay = document.getElementById('usernameDisplay'); // Element to display username
+
         const notesListEl = document.getElementById('notesList');
-        const charCountEl = document.getElementById('charCount'); // Character count element
         const noteSearchInput = document.getElementById('noteSearch'); // Search input element
 
         // Elements for sidebar
         const menuButton = document.getElementById('menuButton');
         const sidebar = document.getElementById('sidebar');
         const closeSidebar = document.getElementById('closeSidebar');
-        const colorOptions = document.getElementById('colorOptions');
-        const autoDeleteIntervalSelect = document.getElementById('autoDeleteInterval'); // Auto delete select
+
+        // NEW: Sidebar accordion sections
+        const sidebarSections = document.querySelectorAll('.sidebar-section');
+
 
         // Elements for filter
         const labelFilter = document.getElementById('labelFilter');
@@ -1056,6 +1694,8 @@
         const editNoteTitleInput = document.getElementById('editNoteTitle');
         const editNoteContentInput = document.getElementById('editNoteContent');
         const editNoteLabelsInput = document.getElementById('editNoteLabels');
+        const editNoteMarkerColorPalette = document.getElementById('editNoteMarkerColorPalette');
+        const editNoteReminderToggle = document.getElementById('editNoteReminderToggle');
         const saveEditedNoteBtn = document.getElementById('saveEditedNote');
         const cancelEditBtn = document.getElementById('cancelEdit');
 
@@ -1070,15 +1710,51 @@
         const confirmShareBtn = document.getElementById('confirmShareBtn');
         const cancelShareBtn = document.getElementById('cancelShareBtn');
 
+        // NOVA FUNCIONALIDADE: Elementos do modal de criação
+        const addNoteAreaWrapper = document.getElementById('addNoteAreaWrapper'); // Wrapper para o botão/formulário de adicionar
+        const createNoteModalOverlay = document.getElementById('createNoteModalOverlay');
+        const newNoteTitleInput = document.getElementById('newNoteTitle');
+        const newNoteLabelsInput = document.getElementById('newNoteLabels');
+        const newNoteContentInput = document.getElementById('newNoteContent');
+        const newNoteMarkerColorPalette = document.getElementById('newNoteMarkerColorPalette');
+        const newNoteReminderToggle = document.getElementById('newNoteReminderToggle');
+        const saveNewNoteBtn = document.getElementById('saveNewNoteBtn');
+        const cancelNewNoteBtn = document.getElementById('cancelNewNoteBtn');
+
+        // NOVA FUNCIONALIDADE: Elementos do lembrete
+        const reminderNotificationOverlay = document.getElementById('reminderNotificationOverlay');
+        const reminderNotesList = document.getElementById('reminderNotesList');
+
+        // NOVA FUNCIONALIDADE: Elementos de impressão
+        const printDayNotesBtn = document.getElementById('printDayNotesBtn');
+        const printWeekNotesBtn = document.getElementById('printWeekNotesBtn');
+        const printMonthNotesBtn = document.getElementById('printMonthNotesBtn');
+        const printableContent = document.getElementById('printableContent');
+
+        // Auto delete select element
+        const autoDeleteIntervalSelect = document.getElementById('autoDeleteInterval');
+
+        // Logout button
+        const logoutButton = document.getElementById('logoutButton');
+
+
         let currentDate = new Date();
         let today = new Date(); // To mark the current day
         let selectedDay = currentDate.getDate();
-        let notes = JSON.parse(localStorage.getItem('diaryNotes')) || {};
+
+        // --- GLOBAL DATA FOR CURRENT USER ---
+        let currentUser = null; // Will store { username: "..." }
+        let notes = {}; // Will store notes for the currentUser
+        let preferences = {}; // Will store preferences for the currentUser
+
         let editingNoteInfo = null; // Stores {day, index} of the note being edited
         let noteToDeleteInfo = null; // Stores {day, index} of the note to be deleted
         let noteToShareInfo = null; // Stores {title, content} of the note to be shared
         let activeLabelFilter = ''; // Stores the currently selected label for filtering
         let activeSearchQuery = ''; // Stores the current search query
+        let selectedMarkerColor = '#6dff6d'; // Default marker color for new notes
+        let lastSelectedPrintOption = null; // NEW: To keep track of the last clicked print button
+
 
         const monthNames = [
             'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -1090,37 +1766,94 @@
 
         const MAX_CHARS = 200; // Max characters for note content
 
-        // --- THEME LOAD/SAVE ---
+        // --- USER DATA MANAGEMENT (NEW/MODIFIED) ---
+
+        // This object will hold all users' data, keyed by username
+        // It's a good practice to keep this in localStorage to persist across sessions
+        let allUsersData = JSON.parse(localStorage.getItem('allUsersData')) || {};
+
+        function loadUserData() {
+            currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+
+            if (!currentUser || !currentUser.username) {
+                // If no user is logged in, redirect to login page
+                window.location.href = 'Login.html';
+                return false; // Stop execution
+            }
+
+            usernameDisplay.textContent = `Usuário: ${currentUser.username}`;
+
+            // Initialize data for the current user if they don't exist in allUsersData
+            if (!allUsersData[currentUser.username]) {
+                allUsersData[currentUser.username] = {
+                    notes: {},
+                    preferences: {
+                        selectedThemeColor: 'linear-gradient(135deg, #A020F0 0%, #5C2B6A 100%)', // Default theme
+                        autoDeleteInterval: 'never' // Default auto-delete
+                    }
+                };
+            }
+
+            // Assign current user's specific notes and preferences
+            notes = allUsersData[currentUser.username].notes;
+            preferences = allUsersData[currentUser.username].preferences;
+
+            // Apply loaded preferences
+            loadTheme();
+            autoDeleteIntervalSelect.value = preferences.autoDeleteInterval || 'never';
+
+            return true; // User data loaded successfully
+        }
+
+        function saveUserData() {
+            if (currentUser && currentUser.username) {
+                allUsersData[currentUser.username] = {
+                    notes: notes,
+                    preferences: preferences
+                };
+                localStorage.setItem('allUsersData', JSON.stringify(allUsersData));
+            }
+        }
+
+        // --- THEME LOAD/SAVE (MODIFIED TO USE PREFERENCES) ---
         function loadTheme() {
-            const savedColor = localStorage.getItem('selectedThemeColor');
+            const savedColor = preferences.selectedThemeColor;
             if (savedColor) {
                 document.documentElement.style.setProperty('--bg-gradient', savedColor);
-                if (savedColor.includes('00ff00')) {
-                    document.body.setAttribute('data-theme', 'green-theme');
-                } else {
-                    document.body.setAttribute('data-theme', 'default');
-                }
+                // Also update the selected theme button
+                const themeButtons = document.querySelectorAll('#colorOptionsContent button');
+                themeButtons.forEach(button => {
+                    button.classList.remove('selected-theme');
+                    if (button.dataset.color === savedColor) {
+                        button.classList.add('selected-theme');
+                    }
+                });
+            } else {
+                // If no saved color, ensure default theme button is selected
+                document.querySelector('#colorOptionsContent button[data-color*="A020F0"]').classList.add('selected-theme');
+                document.documentElement.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #A020F0 0%, #5C2B6A 100%)');
             }
         }
 
         function saveTheme(color) {
-            localStorage.setItem('selectedThemeColor', color);
+            preferences.selectedThemeColor = color;
+            saveUserData();
         }
         // --- END THEME LOAD/SAVE ---
 
-        // --- CHARACTER COUNT LOGIC ---
-        function updateCharCount() {
-            const currentLength = noteContentInput.value.length;
+        // NOVA FUNCIONALIDADE: Contador de caracteres para modais
+        function updateModalCharCount(inputId, charCountId) {
+            const inputEl = document.getElementById(inputId);
+            const charCountEl = document.getElementById(charCountId);
+            const currentLength = inputEl.value.length;
             const remaining = MAX_CHARS - currentLength;
             charCountEl.textContent = `${remaining} caracteres restantes`;
             if (remaining < 0) {
                 charCountEl.style.color = 'red';
             } else {
-                charCountEl.style.color = 'rgba(255, 255, 255, 0.7)';
+                charCountEl.style.color = '#666';
             }
         }
-        // --- END CHARACTER COUNT LOGIC ---
-
 
         function renderCalendar() {
             calendarDaysEl.innerHTML = '';
@@ -1149,6 +1882,11 @@
                 const fullDateKey = `${day}-${month + 1}-${year}`;
                 if (notes[fullDateKey] && notes[fullDateKey].length > 0) {
                     dayEl.classList.add('has-notes');
+                    // Define a cor do marcador com base na PRIMEIRA anotação, ou padrão se não definida
+                    const firstNoteColor = notes[fullDateKey][0].markerColor || '#6dff6d';
+                    dayEl.style.setProperty('--note-indicator-color', firstNoteColor);
+                } else {
+                    dayEl.style.removeProperty('--note-indicator-color');
                 }
 
                 // Mark current day
@@ -1159,6 +1897,22 @@
                 if (day === selectedDay && month === currentDate.getMonth() && year === currentDate.getFullYear()) {
                     dayEl.classList.add('selected');
                 }
+
+                // CORREÇÃO: Adicionar borda amarela APENAS se o filtro estiver ativo E o dia tiver anotação com a etiqueta filtrada
+                if (activeLabelFilter) { // Only apply if a filter is actually active
+                    const notesOnThisDay = notes[fullDateKey] || [];
+                    const hasFilteredNote = notesOnThisDay.some(note =>
+                        note.labels && note.labels.includes(activeLabelFilter)
+                    );
+                    if (hasFilteredNote) {
+                        dayEl.classList.add('filtered-day');
+                    } else {
+                        dayEl.classList.remove('filtered-day');
+                    }
+                } else {
+                    dayEl.classList.remove('filtered-day'); // Ensure it's removed if no filter is active
+                }
+
 
                 dayEl.addEventListener('click', () => {
                     selectedDay = day;
@@ -1173,12 +1927,92 @@
                     }
                     dayEl.classList.add('selected');
                     renderNotes();
+                    renderAddNoteArea(); // Atualizar a área de adicionar anotação
                 });
                 calendarDaysEl.appendChild(dayEl);
             }
             populateLabelFilter(); // Populate filter whenever calendar is rendered (new notes might be added)
             renderNotes(); // Re-render notes for the initially selected day or filtered
+            renderAddNoteArea(); // Renderiza a área de adicionar anotação inicial
         }
+
+        // NOVA FUNCIONALIDADE: Renderizar a área de adicionar anotação
+        function renderAddNoteArea() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const fullDateKey = `${selectedDay}-${month + 1}-${year}`;
+            const hasNotesForSelectedDay = notes[fullDateKey] && notes[fullDateKey].length > 0;
+
+            if (hasNotesForSelectedDay) {
+                addNoteAreaWrapper.innerHTML = `
+                    <button id="showCreateNoteModalBtn" class="simplified-add-button">Criar nova anotação</button>
+                `;
+                document.getElementById('showCreateNoteModalBtn').addEventListener('click', openCreateNoteModal);
+            } else {
+                // If no notes, show the full form, and reset selectedMarkerColor to default
+                selectedMarkerColor = '#6dff6d'; // Reset to default green for a fresh day
+                addNoteAreaWrapper.innerHTML = `
+                    <div class="add-note-section">
+                        <div class="modal-input-group">
+                            <label for="noteTitle">Título:</label>
+                            <div class="input-group">
+                                <span class="icon">&#9999;</span> <input type="text" id="noteTitle" placeholder="Título da Anotação">
+                            </div>
+                        </div>
+                        <div class="modal-input-group">
+                            <label for="noteLabels">Etiquetas (separando por vírgula):</label>
+                            <div class="input-group">
+                                <span class="icon">&#127997;</span> <input type="text" id="noteLabels" placeholder="Etiquetas (ex: trabalho, pessoal)">
+                            </div>
+                        </div>
+                        <div class="modal-input-group">
+                            <label id="markerColorLabel">Cor do Marcador:</label>
+                            <div class="marker-color-palette" id="mainAddNoteMarkerColorPalette">
+                                <div class="marker-color-option selected" data-color="#6dff6d" style="background-color: #6dff6d;"></div>
+                                <div class="marker-color-option" data-color="#FF5733" style="background-color: #FF5733;"></div>
+                                <div class="marker-color-option" data-color="#337AFF" style="background-color: #337AFF;"></div>
+                                <div class="marker-color-option" data-color="#FFC300" style="background-color: #FFC300;"></div>
+                                <div class="marker-color-option" data-color="#900C3F" style="background-color: #900C3F;"></div>
+                            </div>
+                        </div>
+                        <div class="modal-input-group">
+                            <label for="noteContent">Texto:</label>
+                            <textarea id="noteContent" placeholder="Escreva sua anotação aqui..." maxlength="200"
+                                onkeyup="updateCharCount()" onpaste="updateCharCount()"></textarea>
+                            <span class="modal-char-count" id="charCount">200 caracteres restantes</span>
+                        </div>
+                        <div class="reminder-toggle">
+                            <input type="checkbox" id="mainNoteReminderToggle">
+                            <label for="mainNoteReminderToggle">Ativar Lembrete</label>
+                        </div>
+                        <button id="addNoteBtn"></button>
+                    </div>
+                `;
+                // Re-adiciona event listeners aos elementos recém-criados
+                document.getElementById('addNoteBtn').addEventListener('click', addNote);
+                document.getElementById('noteContent').addEventListener('keyup', updateCharCount);
+                document.getElementById('noteContent').addEventListener('paste', updateCharCount);
+                addMarkerColorPaletteListeners('mainAddNoteMarkerColorPalette');
+                updateCharCount(); // Initialize char count for the main input area
+            }
+        }
+
+        // CORREÇÃO: Função para atualizar o contador de caracteres na área principal
+        function updateCharCount() {
+            const inputEl = document.getElementById('noteContent');
+            const charCountEl = document.getElementById('charCount');
+            if (inputEl && charCountEl) {
+                const currentLength = inputEl.value.length;
+                const remaining = MAX_CHARS - currentLength;
+                charCountEl.textContent = `${remaining} caracteres restantes`;
+                if (remaining < 0) {
+                    charCountEl.style.color = 'red';
+                } else {
+                    charCountEl.style.color = 'rgba(255, 255, 255, 0.7)';
+                }
+            }
+        }
+
 
         function renderNotes() {
             notesListEl.innerHTML = '';
@@ -1189,12 +2023,25 @@
             const selectedDateObj = new Date(year, month, selectedDay);
             const dayOfWeek = dayNames[selectedDateObj.getDay()];
             const formattedDate = `${dayOfWeek}, ${selectedDay} de ${monthNames[month]} de ${year}`;
-            fullSelectedDateDisplay.textContent = formattedDate;
+            fullSelectedDateDisplay.textContent = activeLabelFilter || activeSearchQuery ? 'Resultados da Busca/Filtro:' : formattedDate;
+
 
             let notesToDisplay = [];
 
-            // If a label filter is active, get all notes matching that label
-            if (activeLabelFilter) {
+            // Se houver pesquisa ativa, ignore o filtro de data e busque em todas as anotações
+            if (activeSearchQuery) {
+                const query = activeSearchQuery.toLowerCase().trim();
+                // Usar RegExp para buscar por palavras completas e considerar plural/singular
+                const searchRegex = new RegExp(`\\b${query}(s)?\\b`, 'i'); // (s)? para singular/plural
+                Object.values(notes).forEach(dayNotes => {
+                    dayNotes.forEach(note => {
+                        if (searchRegex.test(note.title) || searchRegex.test(note.content)) {
+                            notesToDisplay.push(note);
+                        }
+                    });
+                });
+            } else if (activeLabelFilter) {
+                // Se houver filtro de etiqueta, busque em todas as anotações com a etiqueta
                 Object.values(notes).forEach(dayNotes => {
                     dayNotes.forEach(note => {
                         if (note.labels && note.labels.includes(activeLabelFilter)) {
@@ -1203,28 +2050,30 @@
                     });
                 });
             } else {
-                // Otherwise, get notes for the selected day
+                // Caso contrário, mostre as anotações do dia selecionado
                 if (notes[fullDateKey] && notes[fullDateKey].length > 0) {
-                    notesToDisplay = [...notes[fullDateKey]]; // Use spread to create a copy
+                    notesToDisplay = [...notes[fullDateKey]];
                 }
-            }
-
-            // Apply search filter if active
-            if (activeSearchQuery) {
-                const query = activeSearchQuery.toLowerCase();
-                notesToDisplay = notesToDisplay.filter(note =>
-                    note.title.toLowerCase().includes(query) || note.content.toLowerCase().includes(query)
-                );
             }
 
 
             if (notesToDisplay.length > 0) {
+                // Ordenar notas por timestamp (mais recente primeiro)
+                notesToDisplay.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
                 notesToDisplay.forEach((note, index) => {
                     const noteCard = document.createElement('div');
                     noteCard.classList.add('note-card');
 
                     const titleEl = document.createElement('h3');
-                    titleEl.textContent = note.title;
+                    // NOVA FUNCIONALIDADE: Adicionar sininho se lembrete ativo
+                    if (note.reminder) {
+                        const bellIcon = document.createElement('span');
+                        bellIcon.classList.add('reminder-bell');
+                        bellIcon.textContent = '🔔'; // Unicode bell icon
+                        titleEl.appendChild(bellIcon);
+                    }
+                    titleEl.appendChild(document.createTextNode(note.title)); // Append text after bell
                     noteCard.appendChild(titleEl);
 
                     const contentEl = document.createElement('p');
@@ -1238,13 +2087,17 @@
                         note.labels.forEach(label => {
                             const labelSpan = document.createElement('span');
                             labelSpan.classList.add('note-label');
+                            // NOVA FUNCIONALIDADE: Marcar etiqueta filtrada
+                            if (activeLabelFilter && label === activeLabelFilter) {
+                                labelSpan.classList.add('filtered');
+                            }
                             labelSpan.textContent = label;
                             labelsDiv.appendChild(labelSpan);
                         });
                         noteCard.appendChild(labelsDiv);
                     }
 
-                    // Add date display (for filtered notes, show their original date)
+                    // Add date display (for filtered/searched notes, show their original date)
                     const noteDateDisplayEl = document.createElement('div');
                     noteDateDisplayEl.classList.add('note-date-display');
                     const originalNoteDate = new Date(note.timestamp);
@@ -1270,7 +2123,7 @@
                             }
                         }
                         if (originalDayKey && originalIndex !== -1) {
-                            openEditModal(originalDayKey, originalIndex, note.title, note.content, (note.labels || []).join(', '));
+                            openEditModal(originalDayKey, originalIndex, note);
                         }
                     };
                     actionsDiv.appendChild(editBtn);
@@ -1308,14 +2161,17 @@
                     notesListEl.appendChild(noteCard);
                 });
             } else {
-                notesListEl.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.7);">Nenhuma anotação para este dia ou etiqueta com o filtro atual.</p>';
+                notesListEl.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.7);">Nenhuma anotação para este dia ou que corresponda ao filtro/pesquisa atual.</p>';
             }
         }
 
         function addNote() {
-            const title = noteTitleInput.value.trim();
-            const content = noteContentInput.value.trim();
-            const labels = noteLabelsInput.value.split(',').map(label => label.trim()).filter(label => label !== '');
+            const title = document.getElementById('noteTitle').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+            const labels = document.getElementById('noteLabels').value.split(',').map(label => label.trim()).filter(label => label !== '');
+            const reminder = document.getElementById('mainNoteReminderToggle').checked;
+            const markerColor = selectedMarkerColor; // Use the globally selected color for the main form
+
 
             if (title === '' || content === '') {
                 alert('Por favor, preencha o título e o conteúdo da anotação.');
@@ -1336,18 +2192,72 @@
             notes[fullDateKey].push({
                 title: title,
                 content: content,
-                labels: labels, // Store labels
-                timestamp: new Date().toISOString()
+                labels: labels,
+                timestamp: new Date().toISOString(),
+                markerColor: markerColor,
+                reminder: reminder
             });
-            localStorage.setItem('diaryNotes', JSON.stringify(notes));
+            saveUserData(); // Save notes after adding
 
-            noteTitleInput.value = '';
-            noteContentInput.value = '';
-            noteLabelsInput.value = ''; // Clear labels input
-            updateCharCount(); // Reset character count
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteContent').value = '';
+            document.getElementById('noteLabels').value = '';
+            document.getElementById('mainNoteReminderToggle').checked = false;
+            selectedMarkerColor = '#6dff6d'; // Reset to default green for next new note
+            addMarkerColorPaletteListeners('mainAddNoteMarkerColorPalette'); // Re-select default green
+            updateCharCount();
+
+
             renderNotes();
             renderCalendar(); // Update calendar to show 'has-notes' indicator
             populateLabelFilter(); // Update filter options after adding a new label
+            renderAddNoteArea(); // Re-render to show simplified button if notes now exist
+        }
+
+        // NOVA FUNCIONALIDADE: Função para adicionar nova anotação via modal
+        function addNewNoteFromModal() {
+            const title = newNoteTitleInput.value.trim();
+            const content = newNoteContentInput.value.trim();
+            const labels = newNoteLabelsInput.value.split(',').map(label => label.trim()).filter(label => label !== '');
+            const reminder = newNoteReminderToggle.checked;
+            const markerColor = document.querySelector('#newNoteMarkerColorPalette .marker-color-option.selected').dataset.color;
+
+            if (title === '' || content === '') {
+                alert('Por favor, preencha o título e o conteúdo da anotação.');
+                return;
+            }
+            if (content.length > MAX_CHARS) {
+                alert(`O conteúdo da anotação excede o limite de ${MAX_CHARS} caracteres.`);
+                return;
+            }
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const fullDateKey = `${selectedDay}-${month + 1}-${year}`;
+
+            if (!notes[fullDateKey]) {
+                notes[fullDateKey] = [];
+            }
+            notes[fullDateKey].push({
+                title: title,
+                content: content,
+                labels: labels,
+                timestamp: new Date().toISOString(),
+                markerColor: markerColor,
+                reminder: reminder
+            });
+            saveUserData(); // Save notes after adding
+
+            newNoteTitleInput.value = '';
+            newNoteContentInput.value = '';
+            newNoteLabelsInput.value = '';
+            newNoteReminderToggle.checked = false;
+            updateModalCharCount('newNoteContent', 'newNoteCharCount');
+            closeCreateNoteModal();
+            renderNotes();
+            renderCalendar();
+            populateLabelFilter();
+            renderAddNoteArea(); // Re-render to show simplified button
         }
 
         function deleteNoteConfirmed() {
@@ -1358,30 +2268,41 @@
             if (notes[day].length === 0) {
                 delete notes[day]; // Remove the day entry if no notes left
             }
-            localStorage.setItem('diaryNotes', JSON.stringify(notes));
+            saveUserData(); // Save notes after deleting
             renderNotes();
             renderCalendar(); // Update calendar to remove 'has-notes' indicator if empty
             populateLabelFilter(); // Update filter options after deleting a note
             closeConfirmDeleteModal();
+            renderAddNoteArea(); // Re-render to show full form if no notes now
         }
 
         // --- EDIT MODAL LOGIC ---
-        function openEditModal(day, index, title, content, labels) {
+        function openEditModal(day, index, note) {
             editingNoteInfo = { day, index };
-            editNoteTitleInput.value = title;
-            editNoteContentInput.value = content;
-            editNoteLabelsInput.value = labels; // Set labels for editing
+            editNoteTitleInput.value = note.title;
+            editNoteContentInput.value = note.content;
+            editNoteLabelsInput.value = (note.labels || []).join(', ');
+            editNoteReminderToggle.checked = note.reminder || false;
+            updateModalCharCount('editNoteContent', 'editNoteCharCount');
+
+            // CORREÇÃO: Bloquear edição de cor do marcador se não for a primeira anotação do dia
+            const fullDateKey = `${currentDate.getDate()}-${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
+            const isFirstNoteOfDay = notes[day] && notes[day][0] && notes[day][0].timestamp === note.timestamp;
+
+            if (isFirstNoteOfDay) {
+                editNoteMarkerColorPalette.classList.remove('disabled');
+            } else {
+                editNoteMarkerColorPalette.classList.add('disabled');
+            }
+
+            setupMarkerColorPalette(editNoteMarkerColorPalette, note.markerColor || '#6dff6d'); // Select existing color
             editModalOverlay.classList.add('active');
-            document.documentElement.style.setProperty('--main-content-blur', 'blur(5px)');
-            document.documentElement.style.setProperty('--main-content-pointer-events', 'none');
-            document.documentElement.style.setProperty('--main-content-user-select', 'none');
+            applyMainContentBlur();
         }
 
         function closeEditModal() {
             editModalOverlay.classList.remove('active');
-            document.documentElement.style.setProperty('--main-content-blur', 'none');
-            document.documentElement.style.setProperty('--main-content-pointer-events', 'auto');
-            document.documentElement.style.setProperty('--main-content-user-select', 'auto');
+            removeMainContentBlur();
             editingNoteInfo = null;
         }
 
@@ -1392,38 +2313,147 @@
             const newTitle = editNoteTitleInput.value.trim();
             const newContent = editNoteContentInput.value.trim();
             const newLabels = editNoteLabelsInput.value.split(',').map(label => label.trim()).filter(label => label !== '');
+            // Only get new marker color if it's not disabled
+            const newMarkerColor = editNoteMarkerColorPalette.classList.contains('disabled') ?
+                notes[day][index].markerColor : document.querySelector('#editNoteMarkerColorPalette .marker-color-option.selected').dataset.color;
+            const newReminder = editNoteReminderToggle.checked;
+
 
             if (newTitle === '' || newContent === '') {
                 alert('Título e conteúdo não podem ser vazios.');
                 return;
             }
+            if (newContent.length > MAX_CHARS) {
+                alert(`O conteúdo da anotação excede o limite de ${MAX_CHARS} caracteres.`);
+                return;
+            }
 
             notes[day][index].title = newTitle;
             notes[day][index].content = newContent;
-            notes[day][index].labels = newLabels; // Update labels
-            localStorage.setItem('diaryNotes', JSON.stringify(notes));
+            notes[day][index].labels = newLabels;
+            notes[day][index].markerColor = newMarkerColor;
+            notes[day][index].reminder = newReminder;
+            saveUserData(); // Save notes after editing
             renderNotes();
-            populateLabelFilter(); // Update filter options after editing labels
-            renderCalendar(); // Rerender calendar to update has-notes if labels changed significantly (unlikely but good practice)
+            populateLabelFilter();
+            renderCalendar();
             closeEditModal();
         });
 
         cancelEditBtn.addEventListener('click', closeEditModal);
 
-        // --- CONFIRM DELETE MODAL LOGIC ---
-        function openConfirmDeleteModal(day, index) {
-            noteToDeleteInfo = { day, index };
-            confirmModalOverlay.classList.add('active');
+        // --- CREATE NOTE MODAL LOGIC (NOVA FUNCIONALIDADE) ---
+        function openCreateNoteModal() {
+            newNoteTitleInput.value = '';
+            newNoteLabelsInput.value = '';
+            newNoteContentInput.value = '';
+            newNoteReminderToggle.checked = false;
+            updateModalCharCount('newNoteContent', 'newNoteCharCount');
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const fullDateKey = `${selectedDay}-${month + 1}-${year}`;
+            const hasNotesAlready = notes[fullDateKey] && notes[fullDateKey].length > 0;
+
+            if (hasNotesAlready) {
+                newNoteMarkerColorPalette.classList.add('disabled');
+                // Set the default to the existing marker color of the first note if available
+                const existingMarkerColor = notes[fullDateKey][0].markerColor || '#6dff6d';
+                setupMarkerColorPalette(newNoteMarkerColorPalette, existingMarkerColor);
+            } else {
+                newNoteMarkerColorPalette.classList.remove('disabled');
+                setupMarkerColorPalette(newNoteMarkerColorPalette, '#6dff6d'); // Reset to default green
+            }
+
+            createNoteModalOverlay.classList.add('active');
+            applyMainContentBlur();
+        }
+
+        function closeCreateNoteModal() {
+            createNoteModalOverlay.classList.remove('active');
+            removeMainContentBlur();
+        }
+
+        saveNewNoteBtn.addEventListener('click', addNewNoteFromModal);
+        cancelNewNoteBtn.addEventListener('click', closeCreateNoteModal);
+
+        // --- MARKER COLOR PALETTE LOGIC (NOVA FUNCIONALIDADE) ---
+        function setupMarkerColorPalette(paletteElement, currentColor) {
+            const colorOptions = paletteElement.querySelectorAll('.marker-color-option');
+            colorOptions.forEach(option => {
+                option.classList.remove('selected');
+                // Remove existing click listeners to prevent duplicates
+                option.removeEventListener('click', handleMarkerColorClick);
+                if (!paletteElement.classList.contains('disabled')) { // Only add listener if not disabled
+                    option.addEventListener('click', handleMarkerColorClick);
+                }
+            });
+            // Select the current color
+            const currentSelected = paletteElement.querySelector(`[data-color="${currentColor}"]`);
+            if (currentSelected) {
+                currentSelected.classList.add('selected');
+                // If this is the main add note palette, update global selectedMarkerColor
+                if (paletteElement.id === 'mainAddNoteMarkerColorPalette') {
+                    selectedMarkerColor = currentColor;
+                }
+            } else {
+                // If current color not found, default to green
+                const defaultOption = paletteElement.querySelector('[data-color="#6dff6d"]');
+                if (defaultOption) {
+                    defaultOption.classList.add('selected');
+                    if (paletteElement.id === 'mainAddNoteMarkerColorPalette') {
+                        selectedMarkerColor = '#6dff6d';
+                    }
+                }
+            }
+        }
+
+        function handleMarkerColorClick(event) {
+            const paletteElement = event.target.closest('.marker-color-palette');
+            if (!paletteElement || paletteElement.classList.contains('disabled')) return; // Do nothing if palette is disabled
+
+            const colorOptions = paletteElement.querySelectorAll('.marker-color-option');
+            colorOptions.forEach(opt => opt.classList.remove('selected'));
+            event.target.classList.add('selected');
+
+            // If this is the main add note palette, update global selectedMarkerColor
+            if (paletteElement.id === 'mainAddNoteMarkerColorPalette') {
+                selectedMarkerColor = event.target.dataset.color;
+            }
+        }
+
+        // Initial setup for the main add note area (if present on load)
+        function addMarkerColorPaletteListeners(paletteId) {
+            const palette = document.getElementById(paletteId);
+            if (palette) {
+                setupMarkerColorPalette(palette, selectedMarkerColor);
+            }
+        }
+
+
+        // --- BLUR UTILITIES ---
+        function applyMainContentBlur() {
             document.documentElement.style.setProperty('--main-content-blur', 'blur(5px)');
             document.documentElement.style.setProperty('--main-content-pointer-events', 'none');
             document.documentElement.style.setProperty('--main-content-user-select', 'none');
         }
 
-        function closeConfirmDeleteModal() {
-            confirmModalOverlay.classList.remove('active');
+        function removeMainContentBlur() {
             document.documentElement.style.setProperty('--main-content-blur', 'none');
             document.documentElement.style.setProperty('--main-content-pointer-events', 'auto');
             document.documentElement.style.setProperty('--main-content-user-select', 'auto');
+        }
+
+        // --- CONFIRM DELETE MODAL LOGIC ---
+        function openConfirmDeleteModal(day, index) {
+            noteToDeleteInfo = { day, index };
+            confirmModalOverlay.classList.add('active');
+            applyMainContentBlur();
+        }
+
+        function closeConfirmDeleteModal() {
+            confirmModalOverlay.classList.remove('active');
+            removeMainContentBlur();
             noteToDeleteInfo = null;
         }
 
@@ -1435,16 +2465,12 @@
             noteToShareInfo = { title, content };
             whatsappNumberInput.value = ''; // Clear previous number
             shareModalOverlay.classList.add('active');
-            document.documentElement.style.setProperty('--main-content-blur', 'blur(5px)');
-            document.documentElement.style.setProperty('--main-content-pointer-events', 'none');
-            document.documentElement.style.setProperty('--main-content-user-select', 'none');
+            applyMainContentBlur();
         }
 
         function closeShareModal() {
             shareModalOverlay.classList.remove('active');
-            document.documentElement.style.setProperty('--main-content-blur', 'none');
-            document.documentElement.style.setProperty('--main-content-pointer-events', 'auto');
-            document.documentElement.style.setProperty('--main-content-user-select', 'auto');
+            removeMainContentBlur();
             noteToShareInfo = null;
         }
 
@@ -1501,18 +2527,24 @@
 
         labelFilter.addEventListener('change', (event) => {
             activeLabelFilter = event.target.value;
+            activeSearchQuery = ''; // Clear search when filter is used
+            noteSearchInput.value = ''; // Clear search input
             renderNotes(); // Re-render notes with the new filter
+            renderCalendar(); // Re-render calendar to show filtered days
         });
 
         // --- SEARCH BAR LOGIC ---
         noteSearchInput.addEventListener('input', (event) => {
             activeSearchQuery = event.target.value;
+            activeLabelFilter = ''; // Clear label filter when search is used
+            labelFilter.value = ''; // Clear filter dropdown
             renderNotes(); // Re-render notes with the new search query
+            renderCalendar(); // Re-render calendar to remove any previous filter highlights
         });
 
-        // --- AUTO DELETE LOGIC ---
+        // --- AUTO DELETE LOGIC (MODIFIED TO USE PREFERENCES) ---
         function autoDeleteOldNotes() {
-            const interval = localStorage.getItem('autoDeleteInterval') || 'never';
+            const interval = preferences.autoDeleteInterval || 'never';
             if (interval === 'never') return;
 
             const now = new Date().getTime(); // Current timestamp in milliseconds
@@ -1550,7 +2582,7 @@
             }
 
             if (notesChanged) {
-                localStorage.setItem('diaryNotes', JSON.stringify(notes));
+                saveUserData(); // Save notes after auto-deletion
                 renderNotes();
                 renderCalendar();
                 populateLabelFilter();
@@ -1558,9 +2590,132 @@
         }
 
         autoDeleteIntervalSelect.addEventListener('change', (event) => {
-            localStorage.setItem('autoDeleteInterval', event.target.value);
+            preferences.autoDeleteInterval = event.target.value;
+            saveUserData(); // Save preference change
             autoDeleteOldNotes(); // Run deletion immediately on change
         });
+
+        // --- REMINDER NOTIFICATION LOGIC (NOVA FUNCIONALIDADE) ---
+        function showReminderNotification() {
+            const todayKey = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
+            const remindersForToday = (notes[todayKey] || []).filter(note => note.reminder);
+
+            if (remindersForToday.length > 0) {
+                reminderNotesList.innerHTML = '';
+                remindersForToday.forEach(note => {
+                    const reminderItem = document.createElement('div');
+                    reminderItem.classList.add('reminder-note-item');
+                    reminderItem.innerHTML = `
+                        <h4>${note.title}</h4>
+                        <p>${note.content}</p>
+                    `;
+                    reminderNotesList.appendChild(reminderItem);
+                });
+                reminderNotificationOverlay.classList.add('active');
+                applyMainContentBlur();
+            }
+        }
+
+        function closeReminderNotification() {
+            reminderNotificationOverlay.classList.remove('active');
+            removeMainContentBlur();
+        }
+
+        // --- PRINTING LOGIC (NOVA FUNCIONALIDADE) ---
+        function getNotesForPrinting(scope) {
+            let notesToPrint = [];
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const day = selectedDay;
+
+            if (scope === 'day') {
+                const fullDateKey = `${day}-${month + 1}-${year}`;
+                if (notes[fullDateKey]) {
+                    notesToPrint = notes[fullDateKey];
+                }
+            } else if (scope === 'week') {
+                const startOfWeek = new Date(year, month, selectedDay);
+                startOfWeek.setDate(selectedDay - startOfWeek.getDay()); // Go back to Sunday
+                for (let i = 0; i < 7; i++) {
+                    const currentPrintDay = new Date(startOfWeek);
+                    currentPrintDay.setDate(startOfWeek.getDate() + i);
+                    const printDayKey = `${currentPrintDay.getDate()}-${currentPrintDay.getMonth() + 1}-${currentPrintDay.getFullYear()}`;
+                    if (notes[printDayKey]) {
+                        notesToPrint = notesToPrint.concat(notes[printDayKey]);
+                    }
+                }
+            } else if (scope === 'month') {
+                for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
+                    const printDayKey = `${d}-${month + 1}-${year}`;
+                    if (notes[printDayKey]) {
+                        notesToPrint = notesToPrint.concat(notes[printDayKey]);
+                    }
+                }
+            }
+            return notesToPrint;
+        }
+
+        function printNotes(scope, clickedButton) {
+            const notesToPrint = getNotesForPrinting(scope);
+            printableContent.innerHTML = ''; // Clear previous content
+
+            // Remove selected class from previous print button
+            if (lastSelectedPrintOption) {
+                lastSelectedPrintOption.classList.remove('selected-print-option');
+            }
+            // Add selected class to the current clicked button
+            if (clickedButton) {
+                clickedButton.classList.add('selected-print-option');
+                lastSelectedPrintOption = clickedButton;
+            }
+
+
+            if (notesToPrint.length === 0) {
+                alert('Nenhuma anotação encontrada para imprimir neste período.');
+                return;
+            }
+
+            const printTitle = document.createElement('h2');
+            let periodText = '';
+            if (scope === 'day') {
+                periodText = `Anotações do Dia: ${selectedDay} de ${monthNames[currentDate.getMonth()]} de ${currentDate.getFullYear()}`;
+            } else if (scope === 'week') {
+                const startOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), selectedDay);
+                startOfWeek.setDate(selectedDay - startOfWeek.getDay());
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                periodText = `Anotações da Semana: ${startOfWeek.toLocaleDateString('pt-BR')} - ${endOfWeek.toLocaleDateString('pt-BR')}`;
+            } else if (scope === 'month') {
+                periodText = `Anotações de ${monthNames[currentDate.getMonth()]} de ${currentDate.getFullYear()}`;
+            }
+            printTitle.textContent = periodText;
+            printableContent.appendChild(printTitle);
+
+            // Sort notes by timestamp for consistent printing order
+            notesToPrint.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+            notesToPrint.forEach(note => {
+                const noteCard = document.createElement('div');
+                noteCard.classList.add('note-card');
+
+                const originalNoteDate = new Date(note.timestamp);
+                const formattedPrintDate = `${originalNoteDate.toLocaleDateString('pt-BR')} às ${originalNoteDate.toLocaleTimeString('pt-BR')}`;
+
+                noteCard.innerHTML = `
+                    <h3>${note.title}</h3>
+                    <p>${note.content}</p>
+                    <div class="note-date-print">Criado em: ${formattedPrintDate}</div>
+                `;
+                printableContent.appendChild(noteCard);
+            });
+
+            // Trigger print
+            window.print();
+        }
+
+        printDayNotesBtn.addEventListener('click', (event) => printNotes('day', event.target));
+        printWeekNotesBtn.addEventListener('click', (event) => printNotes('week', event.target));
+        printMonthNotesBtn.addEventListener('click', (event) => printNotes('month', event.target));
 
         // --- EVENT LISTENERS ---
         prevMonthBtn.addEventListener('click', () => {
@@ -1591,53 +2746,73 @@
             renderCalendar();
         });
 
-        addNoteBtn.addEventListener('click', addNote);
+        // addNoteBtn.addEventListener('click', addNote); (Movido para renderAddNoteArea)
 
         // --- SIDEBAR LOGIC ---
         menuButton.addEventListener('click', () => {
             sidebar.classList.add('open');
-            // Apply blur to main content when sidebar opens
-            document.documentElement.style.setProperty('--main-content-blur', 'blur(5px)');
-            document.documentElement.style.setProperty('--main-content-pointer-events', 'none');
-            document.documentElement.style.setProperty('--main-content-user-select', 'none');
+            applyMainContentBlur();
         });
 
         closeSidebar.addEventListener('click', () => {
             sidebar.classList.remove('open');
-            // Remove blur from main content when sidebar closes
-            document.documentElement.style.setProperty('--main-content-blur', 'none');
-            document.documentElement.style.setProperty('--main-content-pointer-events', 'auto');
-            document.documentElement.style.setProperty('--main-content-user-select', 'auto');
+            removeMainContentBlur();
         });
 
-        colorOptions.addEventListener('click', (event) => {
+        // Acordeão: Event Listeners para os cabeçalhos das seções
+        sidebarSections.forEach(section => {
+            const header = section.querySelector('.sidebar-section-header');
+            const content = section.querySelector('.sidebar-section-content');
+
+            header.addEventListener('click', () => {
+                // Fechar outras seções se estiverem abertas (comportamento de acordeão)
+                sidebarSections.forEach(otherSection => {
+                    const otherHeader = otherSection.querySelector('.sidebar-section-header');
+                    const otherContent = otherSection.querySelector('.sidebar-section-content');
+                    if (otherSection !== section && otherContent.classList.contains('active')) {
+                        otherContent.classList.remove('active');
+                        otherHeader.classList.remove('active');
+                    }
+                });
+
+                // Abrir ou fechar a seção clicada
+                content.classList.toggle('active');
+                header.classList.toggle('active');
+            });
+        });
+
+        // Event listener for color options inside the new structure
+        document.getElementById('colorOptionsContent').addEventListener('click', (event) => {
             if (event.target.tagName === 'BUTTON' && event.target.dataset.color) {
                 const newColor = event.target.dataset.color;
                 document.documentElement.style.setProperty('--bg-gradient', newColor);
                 saveTheme(newColor); // Save the selected theme color
 
-                // Set data-theme attribute on body to allow conditional CSS for note indicator
-                if (newColor.includes('00ff00')) { // Check if the green gradient is selected
-                    document.body.setAttribute('data-theme', 'green-theme');
-                } else {
-                    document.body.setAttribute('data-theme', 'default');
-                }
-
-                sidebar.classList.remove('open'); // Close sidebar after selection
-                // Remove blur from main content when sidebar closes
-                document.documentElement.style.setProperty('--main-content-blur', 'none');
-                document.documentElement.style.setProperty('--main-content-pointer-events', 'auto');
-                document.documentElement.style.setProperty('--main-content-user-select', 'auto');
+                // Update selected-theme class
+                document.querySelectorAll('#colorOptionsContent button').forEach(btn => {
+                    btn.classList.remove('selected-theme');
+                });
+                event.target.classList.add('selected-theme');
             }
         });
 
+        // NEW: Logout functionality
+        logoutButton.addEventListener('click', () => {
+            sessionStorage.removeItem('currentUser'); // Clear session
+            window.location.href = 'Login.html'; // Redirect to login page
+        });
+
+
         // Initial setup
-        loadTheme(); // Load theme on page load
-        updateCharCount(); // Initial character count display
-        renderCalendar();
-        populateLabelFilter(); // Initial population of filter
-        autoDeleteOldNotes(); // Run auto-deletion on page load
-        autoDeleteIntervalSelect.value = localStorage.getItem('autoDeleteInterval') || 'never'; // Set initial value of auto delete dropdown
+        // It's crucial to load user data FIRST
+        if (loadUserData()) { // Only proceed if user data was loaded successfully (i.e., user is logged in)
+            renderCalendar();
+            populateLabelFilter(); // Initial population of filter
+            autoDeleteOldNotes(); // Run auto-deletion on page load
+            // The autoDeleteIntervalSelect.value is already set in loadUserData
+            // Check for reminders on page load
+            document.addEventListener('DOMContentLoaded', showReminderNotification);
+        }
     </script>
 </body>
 

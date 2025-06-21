@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); /* Estilo do Login */
+            min-height: 100vh;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden; /* Para a animação de flutuação */
+        }
+
+        /* Animação de flutuação constante */
+        @keyframes float-animation {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Animação de brilho (pulse-glow) */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px rgba(34, 197, 85, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(34, 197, 85, 0.7); }
+            100% { box-shadow: 0 0 15px rgba(34, 197, 85, 0.4); }
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.08); /* Mais opaco que o login */
+            backdrop-filter: blur(12px); /* Efeito de vidro mais pronunciado */
+            border: 1px solid rgba(255, 255, 255, 0.15); /* Borda mais visível */
+            padding: 40px 30px;
+            border-radius: 18px; /* Mais arredondado */
+            text-align: center;
+            width: 100%;
+            max-width: 450px; /* Um pouco mais largo */
+            box-sizing: border-box;
+            position: relative;
+            animation: float-animation 3.5s ease-in-out infinite, pulse-glow 2s infinite alternate; /* Aplica ambas as animações */
+            transition: all 0.3s ease;
+        }
+        .glass-effect:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4); /* Sombra mais forte no hover */
+        }
+
+        .icon-top {
+            font-size: 4.5em; /* Ícone grande */
+            color: #22c55e; /* Verde do gradiente do Login */
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(34, 197, 85, 0.6); /* Brilho sutil no ícone */
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #22c55e, #10b981); /* Cores do Login */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem; /* Maior para destaque */
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            color: #b0b0b0; /* Cor mais clara para o subtítulo */
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0; /* Cor para os labels */
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 12px 12px 45px; /* Mais padding para o ícone */
+            background: rgba(255, 255, 255, 0.1); /* Fundo sutil */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Borda mais visível */
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 1.05em;
+            color: #ffffff; /* Texto branco */
+            transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+        }
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #a0a0a0; /* Placeholder mais claro */
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #22c55e; /* Borda verde no foco */
+            background-color: rgba(255, 255, 255, 0.15); /* Fundo um pouco mais claro no foco */
+            box-shadow: 0 0 0 3px rgba(34, 197, 85, 0.3);
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 65%; /* Ajuste para centralizar verticalmente */
+            transform: translateY(-50%);
+            color: #a0a0a0; /* Cor para os ícones internos */
+            font-size: 1.2em;
+        }
+
+        button {
+            background: linear-gradient(90deg, #22c55e, #10b981); /* Gradiente do botão */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.15em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(34, 197, 85, 0.4); /* Sombra no botão */
+            margin-top: 15px; /* Espaçamento após o último campo */
+        }
+        button:hover {
+            background: linear-gradient(90deg, #10b981, #0f9f70); /* Gradiente mais escuro no hover */
+            transform: translateY(-3px); /* Efeito de lift no hover */
+            box-shadow: 0 8px 20px rgba(34, 197, 85, 0.6);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(34, 197, 85, 0.2);
+        }
+
+        #message {
+            margin-top: 25px;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+            font-size: 0.95em;
+            text-align: center;
+        }
+        #message.success {
+            background-color: rgba(34, 197, 85, 0.2); /* Fundo verde semi-transparente */
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 85, 0.4);
+        }
+        #message.error {
+            background-color: rgba(255, 99, 71, 0.2); /* Fundo vermelho semi-transparente */
+            color: #ff6347;
+            border: 1px solid rgba(255, 99, 71, 0.4);
+        }
+
+        /* Media Queries para responsividade */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .glass-effect {
+                padding: 30px 20px;
+                border-radius: 12px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                animation: none; /* Desativa a animação em mobile */
+                transform: translateY(0) !important;
+            }
+            .glass-effect:hover {
+                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                 transform: translateY(0) !important;
+            }
+            .icon-top {
+                font-size: 3.5em;
+                margin-bottom: 15px;
+            }
+            .gradient-text {
+                font-size: 2em;
+            }
+            .subtitle {
+                font-size: 0.95em;
+                margin-bottom: 20px;
+            }
+            input[type="text"],
+            input[type="password"],
+            button {
+                font-size: 0.95em;
+                padding: 10px 10px 10px 40px; /* Ajuste padding para ícone em mobile */
+            }
+            .form-group i {
+                left: 12px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-effect floating-animation pulse-glow">
+        <div class="icon-top">
+            <i class="fas fa-user-plus"></i> </div>
+        <div class="gradient-text">Crie sua Conta</div>
+        <p class="subtitle">Comece sua jornada de anotações diárias.</p>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Nome de Usuário:</label>
+                <i class="fas fa-user"></i> <input type="text" id="username" name="username" placeholder="Digite seu nome de usuário" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <i class="fas fa-lock"></i> <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Senha:</label>
+                <i class="fas fa-lock"></i> <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme sua senha" required>
+            </div>
+            <button type="submit">Registrar</button>
+            <div id="message"></div>
+        </form>
+        <span class="link" id="loginLink" style="margin-top: 20px; display: block; color: #a0a0a0; cursor: pointer;">Já tem conta? Faça Login</span>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageDiv = document.getElementById('message');
+
+            messageDiv.style.display = 'none';
+            messageDiv.className = '';
+
+            if (username === '' || password === '' || confirmPassword === '') {
+                 messageDiv.textContent = 'Por favor, preencha todos os campos.';
+                 messageDiv.className = 'error';
+                 messageDiv.style.display = 'block';
+                 return;
+            }
+
+            if (password !== confirmPassword) {
+                messageDiv.textContent = 'As senhas não coincidem!';
+                messageDiv.className = 'error';
+                messageDiv.style.display = 'block';
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            const userExists = users.some(user => user.username.toLowerCase() === username.toLowerCase());
+
+            if (userExists) {
+                messageDiv.textContent = 'Nome de usuário já existe. Por favor, escolha outro.';
+                messageDiv.className = 'error';
+                messageDiv.style.display = 'block';
+            } else {
+                users.push({ username: username, password: password });
+                localStorage.setItem('users', JSON.stringify(users));
+
+                messageDiv.textContent = 'Registro realizado com sucesso!';
+                messageDiv.className = 'success';
+                messageDiv.style.display = 'block';
+
+                document.getElementById('registerForm').reset();
+                
+                // Redireciona para a página de Login após 2 segundos
+                setTimeout(() => {
+                    window.location.href = 'Login.html';
+                }, 2000);
+            }
+        });
+
+        document.getElementById('loginLink').addEventListener('click', function() {
+            window.location.href = 'Login.html';
+        });
+    </script>
+</body>
+</html>
